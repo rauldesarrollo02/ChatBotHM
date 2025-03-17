@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Option {
+  CAPTURE
+  MENU
+  READ
+}
+
+enum Rol {
+  ADMIN
+  REDACTOR
+  EMPLEADO
+}
+
+enum TypeMessage {
+  NUMBER
+  NAME
+  NONE
+}
+
+model messages {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  deletedAt  DateTime? @default("9999-12-12T00:00:00.000Z")
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt()
+  available  Boolean @default(true)
+
+  numOrder        Int
+  name            String
+  body            String
+  option          Option
+  typeMessage     TypeMessage @default(NONE)
+  showName        Boolean
+
+  finishLane      Boolean     @default(false)
+
+  trigger         String?      
+
+  enterprise      enterprises @relation(fields: [enterpriseId], references: [id])
+  enterpriseId    String
+
+  parentMessage   messages? @relation("ParentMessage", fields: [parentMessageId], references: [id])
+  parentMessageId String?
+
+  childMessages   messages[] @relation("ParentMessage")
+}
+
+model enterprises {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  deletedAt  DateTime? @default("9999-12-12T00:00:00.000Z")
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+  available  Boolean @default(true)
+
+  name            String
+  phone           String
+  connected       Boolean
+
+  Message         messages[]
+}

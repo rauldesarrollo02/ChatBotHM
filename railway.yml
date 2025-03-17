@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: chatbot-hm
+    buildCommand: "npm run build"
+    startCommand: "npm start"
+    env:
+      - key: DATABASE_URL
+        fromService: db
+        variable: DATABASE_URL
+    ports:
+      - port: 3000
+    git:
+      branch: main
+      repo: https://github.com/rauldesarrollo02/ChatBotHM.git
+
+  - type: postgres
+    name: db
+    env:
+      - key: DATABASE_URL
+        value: "postgresql://chatbotHM_owner:npg_TGUIZp4P2jvl@ep-shy-paper-aco1cs3q-pooler.sa-east-1.aws.neon.tech/chatbotHM?sslmode=require"
+
+volumes:
+  - name: db-data
+    path: /var/lib/postgresql/data
+
+env:
+  - key: NODE_ENV
+    value: production

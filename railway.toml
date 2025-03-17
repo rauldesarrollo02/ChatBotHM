@@ -1,0 +1,19 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "./Dockerfile"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "node dist/main.js"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+healthcheckTimeout = 300
+port = 3000
+
+[service]
+internal_port = 3000
+auto_deploy = true
+
+[env]
+NODE_ENV = "production"
+DATABASE_URL = "postgresql://chatbotHM_owner:npg_TGUIZp4P2jvl@ep-shy-paper-aco1cs3q-pooler.sa-east-1.aws.neon.tech/chatbotHM?sslmode=require"
